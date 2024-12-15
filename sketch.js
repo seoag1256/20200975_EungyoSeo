@@ -25,6 +25,7 @@ function setup() {
   createCanvas(640, 640);
 
   amp = new p5.Amplitude();
+  fft = new p5.FFT();
 
   // 1번 음원
   let title1 = createP("[Whiplash - aespa]");
@@ -90,16 +91,11 @@ function setup() {
 }
 
 function draw() {
-  //테두리
-  strokeWeight(1.5);
-  stroke(0);
-  fill(255);
-  rect(0, 0, 640, 640);
+
+  background(0);
 
   var volAmp = amp.getLevel();
   var diam = map(volAmp, 0, 0.5, 10, 350);
-
-
 
   let r = random(0, 255);
   let g = random(0, 255);
@@ -108,12 +104,27 @@ function draw() {
   let x = width / 2;
   let y = height / 2;
 
-  fill(0, 0, 0, 0);
+  noFill();
   strokeWeight(5);
-  stroke(r, g, b, 150);
+  stroke(r, g, b);
   ellipse(x, y, diam, diam);
   ellipse(x, y, diam/2, diam/2);
   ellipse(x, y, diam*2, diam*2);
+  
+  let waveForm = fft.waveform();
+
+  noFill();
+  stroke(255);
+  strokeWeight(2);
+  beginShape();
+  for (let i = 0; i < waveForm.length; i++) {
+    let x = map(i, 0, waveForm.length, 0, width);
+    let y = map(waveForm[i], -1, 1, 0, height);
+    vertex(x, y);
+  }
+  endShape();
+  
+  
 
   music1.setVolume(vol);
   music2.setVolume(vol);
